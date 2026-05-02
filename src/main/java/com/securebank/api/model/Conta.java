@@ -21,7 +21,7 @@ public class Conta {
     private String senha;
 
     @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal saldo;
+    private BigDecimal saldo = BigDecimal.ZERO;
 
 
     public Long getId() {

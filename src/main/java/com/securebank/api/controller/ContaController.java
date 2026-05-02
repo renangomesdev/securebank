@@ -1,5 +1,6 @@
 package com.securebank.api.controller;
 
+import com.securebank.api.dto.ContaResponseDTO;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,16 @@ public class ContaController {
     }
 
     @PostMapping
-    public ResponseEntity<Conta> criarConta(@RequestBody Conta novaConta) {
+    public ResponseEntity<ContaResponseDTO> criarConta(@RequestBody Conta novaConta) {
 
         Conta contaCriada = contaService.abrirConta(novaConta);
+        ContaResponseDTO response = new ContaResponseDTO(
+                contaCriada.getId(),
+                contaCriada.getNome(),
+                contaCriada.getCpf(),
+                contaCriada.getSaldo()
+        );
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(contaCriada);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

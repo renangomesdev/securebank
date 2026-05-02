@@ -25,10 +25,6 @@ public class ContaService {
         String senhaCriptografada = passwordEncoder.encode(novaConta.getSenha());
         novaConta.setSenha(senhaCriptografada);
 
-        if (novaConta.getSaldo() == null) {
-            novaConta.setSaldo(java.math.BigDecimal.ZERO);
-        }
-
         return repository.save(novaConta);
     }
 }
