@@ -1,6 +1,7 @@
 package com.securebank.api.controller;
 
 import com.securebank.api.dto.ContaResponseDTO;
+import com.securebank.api.dto.DepositoRequestDTO;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
 import org.springframework.http.HttpStatus;
@@ -43,5 +44,22 @@ public class ContaController {
                 contaEncontrada.getSaldo()
         );
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/{id}/deposito")
+    public ResponseEntity<ContaResponseDTO> depositar(
+            @PathVariable Long id,
+            @RequestBody DepositoRequestDTO dtoDeEntrada) {
+
+        Conta contaAtualizada = contaService.depositar(id, dtoDeEntrada.getValor());
+
+        ContaResponseDTO resposta = new ContaResponseDTO(
+                contaAtualizada.getId(),
+                contaAtualizada.getNome(),
+                contaAtualizada.getCpf(),
+                contaAtualizada.getSaldo()
+        );
+
+        return ResponseEntity.ok(resposta);
     }
 }

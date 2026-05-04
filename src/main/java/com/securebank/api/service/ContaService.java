@@ -4,6 +4,8 @@ import com.securebank.api.model.Conta;
 import com.securebank.api.repository.ContaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 
 @Service
 public class ContaService {
@@ -31,5 +33,22 @@ public class ContaService {
     public Conta buscarPorId(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Conta não encontrada com o ID: " + id));
+    }
+
+    // Importe esta anotação lá em cima: import org.springframework.transaction.annotation.Transactional;
+
+    @Transactional
+    public Conta depositar(Long id, BigDecimal valor) {
+
+        Conta conta = buscarPorId(id);
+
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("O valor do depósito deve ser maior que zero!");
+        }
+
+        BigDecimal novoSaldo = conta.getSaldo().add(valor);
+        conta.setSaldo(novoSaldo);
+
+        return repository.save(conta);
     }
 }
