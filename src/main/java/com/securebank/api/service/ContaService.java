@@ -27,4 +27,9 @@ public class ContaService {
 
         return repository.save(novaConta);
     }
+
+    public Conta buscarPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Conta não encontrada com o ID: " + id));
+    }
 }

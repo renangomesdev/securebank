@@ -30,4 +30,18 @@ public class ContaController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ContaResponseDTO> consultarConta(@PathVariable Long id) {
+
+        Conta contaEncontrada = contaService.buscarPorId(id);
+
+        ContaResponseDTO dto = new ContaResponseDTO(
+                contaEncontrada.getId(),
+                contaEncontrada.getNome(),
+                contaEncontrada.getCpf(),
+                contaEncontrada.getSaldo()
+        );
+        return ResponseEntity.ok(dto);
+    }
 }
