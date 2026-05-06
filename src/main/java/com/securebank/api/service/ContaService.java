@@ -51,4 +51,23 @@ public class ContaService {
 
         return repository.save(conta);
     }
+
+    @Transactional
+    public Conta sacar(Long id, BigDecimal valor) {
+
+        Conta conta = buscarPorId(id);
+
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("O valor do saque deve ser maior que zero!");
+        }
+
+        if (conta.getSaldo().compareTo(valor) < 0) {
+            throw new RuntimeException("Saldo insuficiente para realizar este saque!");
+        }
+
+        BigDecimal novoSaldo = conta.getSaldo().subtract(valor);
+        conta.setSaldo(novoSaldo);
+
+        return repository.save(conta);
+    }
 }
