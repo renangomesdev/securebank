@@ -35,8 +35,6 @@ public class ContaService {
                 .orElseThrow(() -> new RuntimeException("Conta não encontrada com o ID: " + id));
     }
 
-    // Importe esta anotação lá em cima: import org.springframework.transaction.annotation.Transactional;
-
     @Transactional
     public Conta depositar(Long id, BigDecimal valor) {
 

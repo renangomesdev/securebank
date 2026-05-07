@@ -6,7 +6,6 @@ public class SaqueRequestDTO {
 
     private BigDecimal valor;
 
-    // Getters e Setters
     public BigDecimal getValor() {
         return valor;
     }
