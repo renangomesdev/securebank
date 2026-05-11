@@ -3,6 +3,7 @@ package com.securebank.api.controller;
 import com.securebank.api.dto.ContaResponseDTO;
 import com.securebank.api.dto.DepositoRequestDTO;
 import com.securebank.api.dto.SaqueRequestDTO;
+import com.securebank.api.dto.TransferenciaRequestDTO;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
 import org.springframework.http.HttpStatus;
@@ -69,10 +70,8 @@ public class ContaController {
             @PathVariable Long id,
             @RequestBody SaqueRequestDTO dtoDeEntrada) {
 
-        // 1. Manda o Service tentar fazer o saque
         Conta contaAtualizada = contaService.sacar(id, dtoDeEntrada.getValor());
 
-        // 2. Prepara a resposta blindada (sem expor a senha)
         ContaResponseDTO resposta = new ContaResponseDTO(
                 contaAtualizada.getId(),
                 contaAtualizada.getNome(),
@@ -80,7 +79,27 @@ public class ContaController {
                 contaAtualizada.getSaldo()
         );
 
-        // 3. Devolve a resposta de sucesso com o novo saldo
+        return ResponseEntity.ok(resposta);
+    }
+
+    @PostMapping("/{id}/transferencia")
+    public ResponseEntity<ContaResponseDTO> transferir(
+            @PathVariable Long id,
+            @RequestBody TransferenciaRequestDTO dtoDeEntrada) {
+
+        Conta contaAtualizada = contaService.transferir(
+                id,
+                dtoDeEntrada.getContaDestinoId(),
+                dtoDeEntrada.getValor()
+        );
+
+        ContaResponseDTO resposta = new ContaResponseDTO(
+                contaAtualizada.getId(),
+                contaAtualizada.getNome(),
+                contaAtualizada.getCpf(),
+                contaAtualizada.getSaldo()
+        );
+
         return ResponseEntity.ok(resposta);
     }
 

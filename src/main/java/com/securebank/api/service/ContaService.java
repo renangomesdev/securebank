@@ -68,4 +68,28 @@ public class ContaService {
 
         return repository.save(conta);
     }
+
+    @Transactional
+    public Conta transferir(Long idOrigem, Long idDestino, BigDecimal valor) {
+
+        if (idOrigem.equals(idDestino)) {
+            throw new RuntimeException("A conta de origem e destino não podem ser a mesma!");
+        }
+
+        Conta contaOrigem = buscarPorId(idOrigem);
+        Conta contaDestino = buscarPorId(idDestino);
+
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("O valor da transferência deve ser maior que zero!");
+        }
+        if (contaOrigem.getSaldo().compareTo(valor) < 0) {
+            throw new RuntimeException("Saldo insuficiente para realizar a transferência!");
+        }
+
+        contaOrigem.setSaldo(contaOrigem.getSaldo().subtract(valor));
+        contaDestino.setSaldo(contaDestino.getSaldo().add(valor));
+
+        repository.save(contaDestino);
+        return repository.save(contaOrigem);
+    }
 }
