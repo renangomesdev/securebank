@@ -20,7 +20,8 @@ public class ContaService {
 
     public Conta abrirConta(Conta novaConta) {
 
-        if (repository.findByCpf(novaConta.getCpf()).isPresent()) {
+        // Agora ele usa o existsByCpf! Bem mais limpo.
+        if (repository.existsByCpf(novaConta.getCpf())) {
             throw new RuntimeException("Já existe uma conta cadastrada com este CPF!");
         }
 
