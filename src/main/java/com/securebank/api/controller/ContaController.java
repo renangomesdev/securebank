@@ -6,6 +6,7 @@ import com.securebank.api.dto.SaqueRequestDTO;
 import com.securebank.api.dto.TransferenciaRequestDTO;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class ContaController {
     @PostMapping("/{id}/deposito")
     public ResponseEntity<ContaResponseDTO> depositar(
             @PathVariable Long id,
-            @RequestBody DepositoRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody DepositoRequestDTO dtoDeEntrada) {
 
         Conta contaAtualizada = contaService.depositar(id, dtoDeEntrada.getValor());
 
@@ -68,7 +69,7 @@ public class ContaController {
     @PostMapping("/{id}/saque")
     public ResponseEntity<ContaResponseDTO> sacar(
             @PathVariable Long id,
-            @RequestBody SaqueRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody SaqueRequestDTO dtoDeEntrada) {
 
         Conta contaAtualizada = contaService.sacar(id, dtoDeEntrada.getValor());
 
@@ -85,7 +86,7 @@ public class ContaController {
     @PostMapping("/{id}/transferencia")
     public ResponseEntity<ContaResponseDTO> transferir(
             @PathVariable Long id,
-            @RequestBody TransferenciaRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody TransferenciaRequestDTO dtoDeEntrada) {
 
         Conta contaAtualizada = contaService.transferir(
                 id,
