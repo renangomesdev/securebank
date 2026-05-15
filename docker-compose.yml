@@ -6,7 +6,7 @@ services:
     container_name: db_securebank
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: banco_dados_seguro
     ports:
       - "3307:3306"
