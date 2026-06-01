@@ -1,6 +1,10 @@
 package com.securebank.api.controller;
 
-import com.securebank.api.dto.*;
+import com.securebank.api.dto.ContaResponseDTO;
+import com.securebank.api.dto.CriarContaRequestDTO;
+import com.securebank.api.dto.DepositoRequestDTO;
+import com.securebank.api.dto.SaqueRequestDTO;
+import com.securebank.api.dto.TransferenciaRequestDTO;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
 import jakarta.validation.Valid;
@@ -21,7 +25,6 @@ public class ContaController {
 
     @PostMapping
     public ResponseEntity<ContaResponseDTO> criarConta(@Valid @RequestBody CriarContaRequestDTO dto) {
-
         Conta novaConta = new Conta();
         novaConta.setNome(dto.getNome());
         novaConta.setCpf(dto.getCpf());
@@ -48,7 +51,6 @@ public class ContaController {
         }
 
         Conta contaEncontrada = contaService.buscarPorId(id);
-
         ContaResponseDTO dto = new ContaResponseDTO(
                 contaEncontrada.getId(),
                 contaEncontrada.getNome(),
@@ -62,10 +64,14 @@ public class ContaController {
     @PostMapping("/{id}/deposito")
     public ResponseEntity<ContaResponseDTO> depositar(
             @PathVariable Long id,
-            @Valid @RequestBody DepositoRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody DepositoRequestDTO dtoDeEntrada,
+            @AuthenticationPrincipal Conta contaAutenticada) {
+
+        if (!contaAutenticada.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         Conta contaAtualizada = contaService.depositar(id, dtoDeEntrada.getValor());
-
         ContaResponseDTO resposta = new ContaResponseDTO(
                 contaAtualizada.getId(),
                 contaAtualizada.getNome(),
@@ -79,10 +85,14 @@ public class ContaController {
     @PostMapping("/{id}/saque")
     public ResponseEntity<ContaResponseDTO> sacar(
             @PathVariable Long id,
-            @Valid @RequestBody SaqueRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody SaqueRequestDTO dtoDeEntrada,
+            @AuthenticationPrincipal Conta contaAutenticada) {
+
+        if (!contaAutenticada.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         Conta contaAtualizada = contaService.sacar(id, dtoDeEntrada.getValor());
-
         ContaResponseDTO resposta = new ContaResponseDTO(
                 contaAtualizada.getId(),
                 contaAtualizada.getNome(),
@@ -96,14 +106,18 @@ public class ContaController {
     @PostMapping("/{id}/transferencia")
     public ResponseEntity<ContaResponseDTO> transferir(
             @PathVariable Long id,
-            @Valid @RequestBody TransferenciaRequestDTO dtoDeEntrada) {
+            @Valid @RequestBody TransferenciaRequestDTO dtoDeEntrada,
+            @AuthenticationPrincipal Conta contaAutenticada) {
+
+        if (!contaAutenticada.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         Conta contaAtualizada = contaService.transferir(
                 id,
                 dtoDeEntrada.getContaDestinoId(),
                 dtoDeEntrada.getValor()
         );
-
         ContaResponseDTO resposta = new ContaResponseDTO(
                 contaAtualizada.getId(),
                 contaAtualizada.getNome(),
@@ -113,5 +127,4 @@ public class ContaController {
 
         return ResponseEntity.ok(resposta);
     }
-
 }
