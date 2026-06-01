@@ -1,5 +1,7 @@
 package com.securebank.api.service;
 
+import com.securebank.api.exception.ContaNaoEncontradaException;
+import com.securebank.api.exception.SaldoInsuficienteException;
 import com.securebank.api.model.Conta;
 import com.securebank.api.repository.ContaRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +35,7 @@ public class ContaService {
 
     public Conta buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Conta não encontrada com o ID: " + id));
+                .orElseThrow(() -> new ContaNaoEncontradaException(id));
     }
 
     @Transactional
@@ -61,7 +63,7 @@ public class ContaService {
         }
 
         if (conta.getSaldo().compareTo(valor) < 0) {
-            throw new RuntimeException("Saldo insuficiente para realizar este saque!");
+            throw new SaldoInsuficienteException();
         }
 
         BigDecimal novoSaldo = conta.getSaldo().subtract(valor);
@@ -84,7 +86,7 @@ public class ContaService {
             throw new RuntimeException("O valor da transferência deve ser maior que zero!");
         }
         if (contaOrigem.getSaldo().compareTo(valor) < 0) {
-            throw new RuntimeException("Saldo insuficiente para realizar a transferência!");
+            throw new SaldoInsuficienteException();
         }
 
         contaOrigem.setSaldo(contaOrigem.getSaldo().subtract(valor));
