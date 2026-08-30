@@ -4,7 +4,9 @@ import com.securebank.api.dto.ContaResponseDTO;
 import com.securebank.api.dto.CriarContaRequestDTO;
 import com.securebank.api.dto.DepositoRequestDTO;
 import com.securebank.api.dto.SaqueRequestDTO;
+import com.securebank.api.dto.TransacaoResponseDTO;
 import com.securebank.api.dto.TransferenciaRequestDTO;
+import java.util.List;
 import com.securebank.api.model.Conta;
 import com.securebank.api.service.ContaService;
 import jakarta.validation.Valid;
@@ -126,5 +128,18 @@ public class ContaController {
         );
 
         return ResponseEntity.ok(resposta);
+    }
+
+    @GetMapping("/{id}/extrato")
+    public ResponseEntity<List<TransacaoResponseDTO>> tirarExtrato(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Conta contaAutenticada) {
+
+        if (!contaAutenticada.getId().equals(id)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        List<TransacaoResponseDTO> extrato = contaService.consultarExtrato(id);
+        return ResponseEntity.ok(extrato);
     }
 }
