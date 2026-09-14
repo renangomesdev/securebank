@@ -47,7 +47,7 @@ function App() {
     }
 
     try {
-      // Endpoint corrigido: /contas/{id}/saque ou /contas/{id}/deposito
+
       const endpoint = `http://localhost:8082/contas/${idConta}/${tipoDaOperacao}`;
       
       const resposta = await fetch(endpoint, {
